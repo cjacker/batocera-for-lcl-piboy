@@ -1,4 +1,4 @@
-# Resources to enable batocera on LCL piboy.
+# Resources to enable batocera 32 on LCL piboy.
 
 Batocera (Up to version 32) is not support RPI CM4 by default, Here is some resource to enable it.
 
@@ -8,6 +8,13 @@ copy 'bcm2711-rpi-cm4.dtb' to first partition.
 
 copy 'overlay' to 'boot' dir of first partition.
 
+# For batocera 33 dev
+
+Batocera 33 dev version added CM4 support, but config.txt still need to be modified for piboy.
+
+copy 'config-for-33-dev.txt' to first partition, replace 'config.txt' from 33 dev.
+
+copy 'overlay' to 'boot' dir of first partition.
 
 ## overlay file
 Batocera use squashfs as its root filesystem, so it's readonly and can not be modified directly. Any changes to root file system will be discarded after reboot. 
