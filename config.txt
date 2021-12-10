@@ -1,0 +1,30 @@
+[pi4]
+dtoverlay=vc4-fkms-v3d
+max_framebuffers=2
+
+[all]
+arm_64bit=1
+cec_osd_name=batocera
+
+disable_overscan=1
+
+boot_delay=3
+disable_splash=1
+kernel=boot/linux
+initramfs boot/initrd.gz
+dtparam=audio=off
+
+avoid_warnings=2
+gpu_mem=256
+gpio=0-27=a2
+hdmi_group:1=2
+hdmi_mode:1=87
+framebuffer_width=640
+framebuffer_height=480
+dpi_group=2
+dpi_mode=87
+dpi_output_format=0x07f007 
+dpi_timings=640 0 240 240 240 480 0 20 40 20 0 0 0 60 0 64000000 1
+enable_dpi_lcd=1
+dtoverlay=dwc2,dr_mode=host
+dtoverlay=gpio-shutdown
