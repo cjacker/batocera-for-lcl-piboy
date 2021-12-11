@@ -25,4 +25,8 @@ This file is a image with ext4 filesystem and can be mounted and modified direct
 
 You can create it via dd/mkfs.ext4 or just modify batocera runtime and save it use 'batocera-save-overlay <size>'.
 
-'overlay' provided in this repos add wqy-microhei.ttf Chinese fonts and pre-configuration to support Chinese display.
+'overlay' add wqy-microhei.ttf Chinese fonts and pre-configurations to support Chinese display.
+'overlay-with-dolphin' add dolphin core based on 'overlay', you need create dir 'gamecube' and 'wii' in /userdata/roms/ and put games there.
+'overlay-with-dolphin-jaguar' add dolphin and jaguar core based on 'overlay', you need create dir 'gamecube' and 'wii' and 'atarijaguar' in /userdata/roms/ and put games there.
+
+'\*-for-33-dev' is for batocera 33 dev version.
