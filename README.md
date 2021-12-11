@@ -6,7 +6,7 @@ copy 'config.txt' to first partition, replace 'config.txt' and 'config64.txt'.
 
 copy 'bcm2711-rpi-cm4.dtb' to first partition.
 
-copy 'overlay' to 'boot' dir of first partition.
+copy 'overlay' to 'boot' dir as 'boot/overlay' of first partition.
 
 # For batocera 33 dev
 
@@ -14,7 +14,7 @@ Batocera 33 dev version added CM4 support, but config.txt still need to be modif
 
 copy 'config-for-33-dev.txt' to first partition, replace 'config.txt' from 33 dev.
 
-copy 'overlay' to 'boot' dir of first partition.
+copy 'overlay' to 'boot' dir as 'boot/overlay' of first partition.
 
 ## overlay file
 Batocera use squashfs as its root filesystem, so it's readonly and can not be modified directly. Any changes to root file system will be discarded after reboot. 
