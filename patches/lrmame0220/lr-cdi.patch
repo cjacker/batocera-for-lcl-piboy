@@ -1,0 +1,213 @@
+diff -Nur mame-lrmame0220/src/osd/libretro/libretro-internal/libretro.cpp mame-lrmame0220.finish/src/osd/libretro/libretro-internal/libretro.cpp
+--- mame-lrmame0220/src/osd/libretro/libretro-internal/libretro.cpp	2020-06-26 06:15:42.000000000 +0800
++++ mame-lrmame0220.finish/src/osd/libretro/libretro-internal/libretro.cpp	2021-12-14 17:42:30.518987178 +0800
+@@ -39,17 +39,10 @@
+ int NEWGAME_FROM_OSD  = 0;
+ char RPATH[512];
+ 
+-static char option_mouse[50];
+ static char option_lightgun[50];
+ static char option_cheats[50];
+ static char option_overclock[50];
+ static char option_renderer[50];
+-static char option_osd[50];
+-static char option_cli[50];
+-static char option_bios[50];
+-static char option_softlist[50];
+-static char option_softlist_media[50];
+-static char option_media[50];
+ static char option_read_config[50];
+ static char option_write_config[50];
+ static char option_auto_save[50];
+@@ -141,17 +134,10 @@
+ 
+ void retro_set_environment(retro_environment_t cb)
+ {
+-   sprintf(option_mouse, "%s_%s", core, "mouse_enable");
+    sprintf(option_lightgun, "%s_%s", core, "lightgun_mode");
+    sprintf(option_cheats, "%s_%s", core, "cheats_enable");
+    sprintf(option_overclock, "%s_%s", core, "cpu_overclock");
+    sprintf(option_renderer,"%s_%s",core,"alternate_renderer");
+-   sprintf(option_osd,"%s_%s",core,"boot_to_osd");
+-   sprintf(option_bios,"%s_%s",core,"boot_to_bios");
+-   sprintf(option_cli,"%s_%s",core,"boot_from_cli");
+-   sprintf(option_softlist,"%s_%s",core,"softlists_enable");
+-   sprintf(option_softlist_media,"%s_%s",core,"softlists_auto_media");
+-   sprintf(option_media,"%s_%s",core,"media_type");
+    sprintf(option_read_config,"%s_%s",core,"read_config");
+    sprintf(option_write_config,"%s_%s",core,"write_config");
+    sprintf(option_auto_save,"%s_%s",core,"auto_save");
+@@ -168,24 +154,14 @@
+     { option_write_config, "Write configuration; disabled|enabled" },
+     { option_saves, "Save state naming; game|system" },
+     { option_auto_save, "Auto save/load states; disabled|enabled" },
+-    { option_mouse, "Enable in-game mouse; disabled|enabled" },
+     { option_lightgun, "Lightgun mode; none|touchscreen|lightgun" },
+     { option_buttons_profiles, "Profile Buttons according to games (Restart); enabled|disabled" },
+     { option_throttle, "Enable throttle; disabled|enabled" },
+     { option_cheats, "Enable cheats; disabled|enabled" },
+     { option_overclock, "Main CPU Overclock; default|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|60|65|70|75|80|85|90|95|100|105|110|115|120|125|130|135|140|145|150" },
+     { option_renderer, "Alternate render method; disabled|enabled" },
+-
+-    { option_softlist, "Enable softlists; enabled|disabled" },
+-    { option_softlist_media, "Softlist automatic media type; enabled|disabled" },
+-    { option_media, "Media type; rom|cart|flop|cdrm|cass|hard|serl|prin" },
+-    { option_bios, "Boot to BIOS; disabled|enabled" },
+-
+-    { option_osd, "Boot to OSD; disabled|enabled" },
+-    { option_cli, "Boot from CLI; disabled|enabled" },
+     { option_res, "Resolution; 640x480|640x360|800x600|800x450|960x720|960x540|1024x768|1024x576|1280x960|1280x720|1600x1200|1600x900|1440x1080|1920x1080|1920x1440|2560x1440|2880x2160|3840x2160" },
+     { option_mame_paths, "MAME INI Paths; disabled|enabled" },
+-
+     { option_mame_4way, "MAME Joystick 4-way simulation; disabled|4way|strict|qbert"},
+     { NULL, NULL },
+    };
+@@ -217,27 +193,7 @@
+ {
+    struct retro_variable var = {0};
+ 
+-   var.key   = option_cli;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "enabled"))
+-         experimental_cmdline = true;
+-      if (!strcmp(var.value, "disabled"))
+-         experimental_cmdline = false;
+-   }
+ 
+-   var.key   = option_mouse;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "disabled"))
+-         mouse_enable = false;
+-      if (!strcmp(var.value, "enabled"))
+-         mouse_enable = true;
+-   }
+ 
+    var.key   = option_lightgun;
+    var.value = NULL;
+@@ -355,16 +311,6 @@
+ 
+    }
+ 
+-   var.key   = option_osd;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "enabled"))
+-         boot_to_osd_enable = true;
+-      if (!strcmp(var.value, "disabled"))
+-         boot_to_osd_enable = false;
+-   }
+ 
+    var.key = option_read_config;
+    var.value = NULL;
+@@ -399,46 +345,14 @@
+          game_specific_saves_enable = false;
+    }
+ 
+-   var.key   = option_media;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      sprintf(mediaType,"-%s",var.value);
+-   }
+-
+-   var.key   = option_softlist;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "enabled"))
+-         softlist_enable = true;
+-      if (!strcmp(var.value, "disabled"))
+-         softlist_enable = false;
+-   }
+-
+-   var.key   = option_softlist_media;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "enabled"))
+-         softlist_auto = true;
+-      if (!strcmp(var.value, "disabled"))
+-         softlist_auto = false;
+-   }
+-
+-   var.key = option_bios;
+-   var.value = NULL;
+-
+-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+-   {
+-      if (!strcmp(var.value, "enabled"))
+-         boot_to_bios_enable = true;
+-      if (!strcmp(var.value, "disabled"))
+-         boot_to_bios_enable = false;
+-   }
++   // CDi default values
++   sprintf(mediaType,"-%s","cdrm");
++   softlist_enable = false;
++   mouse_enable = true;
++   softlist_auto = false;
++   boot_to_osd_enable = false;
++   boot_to_bios_enable = false;
++   experimental_cmdline = false;
+ 
+    var.key = option_write_config;
+    var.value = NULL;
+@@ -529,9 +443,9 @@
+ {
+    memset(info, 0, sizeof(*info));
+ 
+-   info->library_name     = "MAME";
++   info->library_name     = "CDI";
+    info->library_version  = bare_build_version;
+-   info->valid_extensions = "chd|cmd|zip|7z";
++   info->valid_extensions = "chd";
+    info->need_fullpath    = true;
+    info->block_extract    = true;
+ }
+diff -Nur mame-lrmame0220/src/osd/libretro/libretro-internal/retro_init.cpp mame-lrmame0220.finish/src/osd/libretro/libretro-internal/retro_init.cpp
+--- mame-lrmame0220/src/osd/libretro/libretro-internal/retro_init.cpp	2020-06-26 06:15:42.000000000 +0800
++++ mame-lrmame0220.finish/src/osd/libretro/libretro-internal/retro_init.cpp	2021-12-14 17:33:07.949671392 +0800
+@@ -271,17 +271,6 @@
+          log_cb(RETRO_LOG_ERROR, "Error parsing game path: %s\n",srcpath);
+    }
+ 
+-   /* Split the path to directory and
+-    * the name without the zip extension. */
+-   result = parseSystemName(srcpath, MsystemName);
+-   if (result == 0)
+-   {
+-      strcpy(MsystemName,srcpath );
+-      result_value|=2;
+-      if (log_cb)
+-         log_cb(RETRO_LOG_ERROR, "Error parsing system name: %s\n",srcpath);
+-   }
+-
+    /* Get the parent path. */
+    result = parseParentPath(srcpath, MparentPath);
+ 
+@@ -297,7 +286,6 @@
+    {
+       log_cb(RETRO_LOG_DEBUG, "Path extraction result: File name=%s\n",srcpath);
+       log_cb(RETRO_LOG_DEBUG, "Path extraction result: Game name=%s\n",MgameName);
+-      log_cb(RETRO_LOG_DEBUG, "Path extraction result: System name=%s\n",MsystemName);
+       log_cb(RETRO_LOG_DEBUG, "Path extraction result: Game path=%s\n",MgamePath);
+       log_cb(RETRO_LOG_DEBUG, "Path extraction result: Parent path=%s\n",MparentPath);
+    }
+@@ -429,6 +417,7 @@
+ 
+    Extract_AllPath(path);
+ 
++   strcpy(MsystemName, "cdimono1");
+    /* Find if the driver exists for MgameName.
+     * If not, check if a driver exists for MsystemName.
+     * Otherwise, exit. */

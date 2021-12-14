@@ -1,0 +1,43 @@
+diff -Nur mame-lrmame0220.orig/src/emu/inpttype.ipp mame-lrmame0220/src/emu/inpttype.ipp
+--- mame-lrmame0220.orig/src/emu/inpttype.ipp	2021-12-14 17:47:10.882482623 +0800
++++ mame-lrmame0220/src/emu/inpttype.ipp	2021-12-14 17:48:50.869659318 +0800
+@@ -835,6 +835,7 @@
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_FOCUS_PREV,       "UI Focus Previous",      input_seq(KEYCODE_TAB, KEYCODE_LSHIFT) ) \
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_SELECT,           "UI Select",              input_seq(KEYCODE_ENTER, input_seq::or_code, JOYCODE_BUTTON1_INDEXED(0), input_seq::or_code, KEYCODE_ENTER_PAD) ) \
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_CANCEL,           "UI Cancel",              input_seq(KEYCODE_ESC) ) \
++		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_EXIT_GAME,        "Exit Game",              input_seq() ) \
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_DISPLAY_COMMENT,  "UI Display Comment",     input_seq(KEYCODE_SPACE) ) \
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_CLEAR,            "UI Clear",               input_seq(KEYCODE_DEL) ) \
+ 		INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_ZOOM_IN,          "UI Zoom In",             input_seq(KEYCODE_EQUALS) ) \
+diff -Nur mame-lrmame0220.orig/src/emu/ioport.h mame-lrmame0220/src/emu/ioport.h
+--- mame-lrmame0220.orig/src/emu/ioport.h	2021-12-14 17:47:10.882482623 +0800
++++ mame-lrmame0220/src/emu/ioport.h	2021-12-14 17:48:50.870659320 +0800
+@@ -350,6 +350,7 @@
+ 		IPT_UI_FOCUS_PREV,
+ 		IPT_UI_SELECT,
+ 		IPT_UI_CANCEL,
++		IPT_UI_EXIT_GAME,
+ 		IPT_UI_DISPLAY_COMMENT,
+ 		IPT_UI_CLEAR,
+ 		IPT_UI_ZOOM_IN,
+diff -Nur mame-lrmame0220.orig/src/frontend/mame/ui/ui.cpp mame-lrmame0220/src/frontend/mame/ui/ui.cpp
+--- mame-lrmame0220.orig/src/frontend/mame/ui/ui.cpp	2021-12-14 17:47:10.891482639 +0800
++++ mame-lrmame0220/src/frontend/mame/ui/ui.cpp	2021-12-14 17:49:21.492713453 +0800
+@@ -1112,7 +1112,7 @@
+ 
+ 	if (ui_disabled) return ui_disabled;
+ 
+-	if (machine().ui_input().pressed(IPT_UI_CANCEL))
++	if (machine().ui_input().pressed(IPT_UI_EXIT_GAME))
+ 	{
+ 		request_quit();
+ 		return 0;
+@@ -1290,7 +1290,7 @@
+ 		machine().schedule_exit();
+ 
+ 	// if the user press ESC, just continue
+-	else if (machine().ui_input().pressed(IPT_UI_CANCEL))
++	else if (machine().ui_input().pressed(IPT_UI_EXIT_GAME))
+ 	{
+ 		machine().resume();
+ 		state = UI_HANDLER_CANCEL;

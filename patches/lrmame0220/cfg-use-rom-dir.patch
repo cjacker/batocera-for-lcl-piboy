@@ -1,0 +1,57 @@
+diff -Nur mame-lrmame0220.orig/src/osd/libretro/libretro-internal/retro_init.cpp mame-lrmame0220/src/osd/libretro/libretro-internal/retro_init.cpp
+--- mame-lrmame0220.orig/src/osd/libretro/libretro-internal/retro_init.cpp	2021-12-14 07:18:13.522873309 -0500
++++ mame-lrmame0220/src/osd/libretro/libretro-internal/retro_init.cpp	2021-12-14 07:20:30.861684076 -0500
+@@ -486,46 +486,14 @@
+          Add_Option((char*)"-rol");
+    }
+ 
++   sprintf(tmp_dir, "%s", MgamePath);
+    Add_Option((char*)("-rompath"));
+-
+-   if(!boot_to_osd_enable)
+-   {
+-      sprintf(tmp_dir, "%s", MgamePath);
+-      Add_Option((char*)(tmp_dir));
+-
+-      if(softlist_enable)
+-      {
+-         if(!arcade)
+-         {
+-            Add_Option(MsystemName);
+-            if(!boot_to_bios_enable)
+-            {
+-               if(!softlist_auto)
+-                  Add_Option((char*)mediaType);
+-               Add_Option((char*)MgameName);
+-            }
+-         }
+-         else
+-            Add_Option((char*)MgameName);
+-      }
+-      else
+-      {
+-         if (!strcmp(mediaType, "-rom"))
+-            Add_Option(MgameName);
+-         else
+-         {
+-            Add_Option(MsystemName);
+-            Add_Option((char*)mediaType);
+-            Add_Option((char*)gameName);
+-         }
+-      }
+-   }
+-   else
+-   {
+-      sprintf(tmp_dir, "%s;%s", MgamePath,MparentPath);
+-      Add_Option((char*)(tmp_dir));
+-   }
+-
++   Add_Option((char*)(tmp_dir));
++   Add_Option((char*)("-cfg_directory"));
++   Add_Option((char*)(tmp_dir));
++   Add_Option(MsystemName);
++   Add_Option((char*)mediaType);
++   Add_Option((char*)gameName);
+    return 0;
+ }
+ 
