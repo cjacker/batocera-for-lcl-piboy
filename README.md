@@ -1,4 +1,4 @@
-# Resources to enable batocera 32 on LCL piboy.
+# Resources to enable batocera version 32 on LCL piboy.
 
 Batocera (Up to version 32) is not support RPI CM4 by default, Here is some resource to enable it.
 
@@ -31,4 +31,21 @@ You can create it via dd/mkfs.ext4 or just modify batocera runtime and save it u
 
 'overlay-with-dolphin-jaguar' add dolphin and jaguar core based on 'overlay', you need create dir 'gamecube' and 'wii' and 'atarijaguar' in /userdata/roms/ and put games there.
 
+'overlay-with-dolphin-jaguar-cdi' add dolphin/jaguar/cdi core based on 'overlay', you need create dir 'gamecube' and 'wii' and 'atarijaguar' in /userdata/roms/ and put games there.
+
 '\*-for-33-dev' is for batocera 33 dev version.
+
+## Philips CD-i suppport
+cdi core is based on mame 0.220 with some modifications.
+
+Since cdi machine of mame use mouse as default input device, so it need a default config to map input device to joystick.
+
+It will load this config file and 'cdimono1' rom from game rom dir.
+
+So, if you want to play CD-i games, you need:
+
+*  create a 'cdi' dir under 'roms'
+*  copy cdimono1.zip and cdimono1.cfg from this repo to 'cdi' dir
+*  put some 'chd' roms in 'cdi' dir and play
+
+
