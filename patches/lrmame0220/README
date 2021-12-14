@@ -1,1 +1,9 @@
-cdi patches for lrmame0220
+cdi patches for lrmame0220:
+
+lrmame0220:
+https://github.com/libretro/mame/archive/refs/tags/lrmame0220.tar.gz
+
+
+Build:
+make -f Makefile.libretro -f Makefile.libretro SUBTARGET=cdi SOURCES=src/mame/drivers/cdi.cpp -j4
+
