@@ -16,13 +16,13 @@ And you need manually:
 
 *   Create 'cdi' dir in 'roms' dir for cdi2015 core.
 
-*   *Put 'cdimono1.zip' from this repos or mame romsets, and put it to 'bios' or 'roms/cdi' dir.*
+*   **Put 'cdimono1.zip' from this repos or mame romsets, and put it to 'bios' or 'roms/cdi' dir.**
 
 
 # For LCL PiBoy
 LCL PiBoy use RPI CM4 as it's computing module and batocera need some customizations.
 
-*After dd image to TF card:*
+**After dd image to TF card:**
 
 For batocera 32 version:
 
