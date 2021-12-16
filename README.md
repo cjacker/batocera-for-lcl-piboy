@@ -1,51 +1,46 @@
-# Resources to enable batocera version 32 on LCL piboy.
+# Overlays with dolphin/jaguar/philips CD-i for batocera RPI 4b/CM4
+This is 'overlay' for Batocera RPI 4 series with dolphin, virtualjaguar and philips CD-i cores.
 
-Batocera (Up to version 32) is not support RPI CM4 by default, Here is some resource to enable it.
+And provide default configurations for Chinese display.
 
-copy 'config.txt' to first partition, replace 'config.txt' and 'config64.txt'. 
+## Usage:
+After dd batocera 32 image to TF card, copy 'overlay' file to 'boot' dir as 'boot/overlay' of first partition.
 
-copy 'bcm2711-rpi-cm4.dtb' to first partition.
+If you use batocera 33 dev version, please use 'overlay-for-ver33-dev' and rename it to 'overlay'.
 
-copy 'overlay' to 'boot' dir as 'boot/overlay' of first partition.
+And you need manually:
 
-# For batocera 33 dev
+*   Create 'gamecube' and 'wii' dir in 'roms' dir for dolphin core.
 
-Batocera 33 dev version added CM4 support, but config.txt still need to be modified for piboy.
+*   Create 'atarijaguar' dir in 'roms' dir for virtualjaguar core.
 
-copy 'config-for-33-dev.txt' to first partition, replace 'config.txt' from 33 dev.
+*   Create 'cdi' dir in 'roms' dir for cdi2015 core.
 
-copy 'overlay' to 'boot' dir as 'boot/overlay' of first partition.
+*   *Put 'cdimono1.zip' from this repos or mame romsets, and put it to 'bios' or 'roms/cdi' dir.*
 
-## overlay file
-Batocera use squashfs as its root filesystem, so it's readonly and can not be modified directly. Any changes to root file system will be discarded after reboot. 
 
-But it support store changes in a 'overlay' file in '/boot/boot/overlay'.
+# For LCL PiBoy
+LCL PiBoy use RPI CM4 as it's computing module and batocera need some customizations.
 
-This file is a image with ext4 filesystem and can be mounted and modified directly via 'mount -o loop'.
+*After dd image to TF card:*
+
+For batocera 32 version:
+
+*   copy 'config.txt' to first partition, replace 'config.txt' and 'config64.txt'.
+*   copy 'bcm2711-rpi-cm4.dtb' to first partition, since batocera 32 lack support of CM4.
+
+For batocera 33 dev version:
+
+*   copy 'config.txt' to first partition, replace original 'config.txt'.
+
+# Overlay file
+Batocera use squashfs as its root filesystem, it's readonly and can not be modified directly. Any changes to root file system will be discarded after reboot. 
+
+But it support to store root filesystem changes into a 'overlay' file in '/boot/boot/overlay'.
+
+'overlay' file is a image with ext4 filesystem and can be mounted and modified directly.
 
 You can create it via dd/mkfs.ext4 or just modify batocera runtime and save it use 'batocera-save-overlay <size>'.
 
-'overlay' add wqy-microhei.ttf Chinese fonts and pre-configurations to support Chinese display.
-
-'overlay-with-dolphin' add dolphin core based on 'overlay', you need create dir 'gamecube' and 'wii' in /userdata/roms/ and put games there.
-
-'overlay-with-dolphin-jaguar' add dolphin and jaguar core based on 'overlay', you need create dir 'gamecube' and 'wii' and 'atarijaguar' in /userdata/roms/ and put games there.
-
-'overlay-with-dolphin-jaguar-cdi' add dolphin/jaguar/cdi core based on 'overlay', you need create dir 'gamecube' and 'wii' and 'atarijaguar' in /userdata/roms/ and put games there.
-
-'\*-for-33-dev' is for batocera 33 dev version.
-
-## Philips CD-i suppport
-cdi core is based on mame 0.220 with some modifications.
-
-Since cdi machine of mame use mouse as default input device, so it need a default config to map input device to joystick.
-
-It will load this config file and 'cdimono1' rom from game rom dir.
-
-So, if you want to play CD-i games, you need:
-
-*  create a 'cdi' dir under 'roms'
-*  copy cdimono1.zip and cdimono1.cfg from this repo to 'cdi' dir
-*  put some 'chd' roms in 'cdi' dir and play
-
-
+# Philips CD-i libretro core
+cdi2015 core is based on lr-mame2015 with some patches. it's light weight and faster than mame newer version.
