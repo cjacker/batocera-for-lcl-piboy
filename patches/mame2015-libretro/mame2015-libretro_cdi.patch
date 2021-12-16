@@ -1,6 +1,6 @@
-diff -Nur mame2015-libretro-master/Makefile mame2015-libretro-master.ok/Makefile
+diff -Nur mame2015-libretro-master/Makefile mame2015-libretro-mastern/Makefile
 --- mame2015-libretro-master/Makefile	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/Makefile	2021-12-15 16:03:00.305270863 +0800
++++ mame2015-libretro-mastern/Makefile	2021-12-16 15:41:25.192589018 +0800
 @@ -44,32 +44,16 @@
  # Default to something reasonable for all platforms
  ARFLAGS = -cr
@@ -36,9 +36,42 @@ diff -Nur mame2015-libretro-master/Makefile mame2015-libretro-master.ok/Makefile
  #-------------------------------------------------
  # compile flags
  # CCOMFLAGS are common flags
-diff -Nur mame2015-libretro-master/src/emu/inpttype.h mame2015-libretro-master.ok/src/emu/inpttype.h
+@@ -80,10 +64,10 @@
+ 
+ # start with empties for everything
+ CCOMFLAGS = -DDISABLE_MIDI -fno-delete-null-pointer-checks
+-CONLYFLAGS = -fpermissive
++CONLYFLAGS = -fpermissive -fno-stack-protector
+ CONLYFLAGS += $(CORE_DEFINE)
+ COBJFLAGS =
+-CPPONLYFLAGS = -fpermissive
++CPPONLYFLAGS = -fpermissive -fno-stack-protector
+ CPPONLYFLAGS += $(CORE_DEFINE)
+ # LDFLAGS are used generally; LDFLAGSEMULATOR are additional
+ # flags only used when linking the core emulator
+@@ -117,7 +101,7 @@
+ 
+ # uncomment next line to build PortMidi as part of MAME/MESS build
+ #BUILD_MIDILIB = 1
+-VRENDER ?= soft
++VRENDER ?= soft 
+ 
+ # Unix
+ ifneq (,$(findstring unix,$(platform)))
+@@ -148,6 +132,10 @@
+    ifeq ($(firstword $(filter amd64,$(UNAME))),amd64)
+       PTR64 = 1
+    endif
++   ifeq ($(firstword $(filter aarch64,$(UNAME))),aarch64)
++      PTR64 = 1
++      PLATCFLAGS += -DSDLMAME_NO64BITIO -DSDLMAME_ARM -DFORCE_DRC_C_BACKEND 
++   endif
+    ifeq ($(firstword $(filter ppc64,$(UNAME))),ppc64)
+       PTR64 = 1
+    endif
+diff -Nur mame2015-libretro-master/src/emu/inpttype.h mame2015-libretro-mastern/src/emu/inpttype.h
 --- mame2015-libretro-master/src/emu/inpttype.h	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/emu/inpttype.h	2021-12-15 15:37:14.654128068 +0800
++++ mame2015-libretro-mastern/src/emu/inpttype.h	2021-12-16 15:41:25.193589019 +0800
 @@ -736,6 +736,7 @@
  	INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_PAGE_DOWN,        "UI Page Down",           input_seq(KEYCODE_PGDN) )
  	INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_SELECT,           "UI Select",              input_seq(KEYCODE_ENTER, input_seq::or_code, JOYCODE_BUTTON1_INDEXED(0)) )
@@ -47,9 +80,9 @@ diff -Nur mame2015-libretro-master/src/emu/inpttype.h mame2015-libretro-master.o
  	INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_DISPLAY_COMMENT,  "UI Display Comment",     input_seq(KEYCODE_SPACE) )
  	INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_CLEAR,            "UI Clear",               input_seq(KEYCODE_DEL) )
  	INPUT_PORT_DIGITAL_TYPE( 0, UI,      UI_ZOOM_IN,          "UI Zoom In",             input_seq(KEYCODE_EQUALS) )
-diff -Nur mame2015-libretro-master/src/emu/ioport.h mame2015-libretro-master.ok/src/emu/ioport.h
+diff -Nur mame2015-libretro-master/src/emu/ioport.h mame2015-libretro-mastern/src/emu/ioport.h
 --- mame2015-libretro-master/src/emu/ioport.h	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/emu/ioport.h	2021-12-15 15:37:38.087148476 +0800
++++ mame2015-libretro-mastern/src/emu/ioport.h	2021-12-16 15:41:25.194589019 +0800
 @@ -354,6 +354,7 @@
  		IPT_UI_PAGE_DOWN,
  		IPT_UI_SELECT,
@@ -58,9 +91,9 @@ diff -Nur mame2015-libretro-master/src/emu/ioport.h mame2015-libretro-master.ok/
  		IPT_UI_DISPLAY_COMMENT,
  		IPT_UI_CLEAR,
  		IPT_UI_ZOOM_IN,
-diff -Nur mame2015-libretro-master/src/emu/ui/ui.c mame2015-libretro-master.ok/src/emu/ui/ui.c
+diff -Nur mame2015-libretro-master/src/emu/ui/ui.c mame2015-libretro-mastern/src/emu/ui/ui.c
 --- mame2015-libretro-master/src/emu/ui/ui.c	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/emu/ui/ui.c	2021-12-15 15:38:36.006245158 +0800
++++ mame2015-libretro-mastern/src/emu/ui/ui.c	2021-12-16 15:41:25.196589021 +0800
 @@ -1290,7 +1290,7 @@
  	machine.ui().draw_text_box(container, messagebox_text, JUSTIFY_LEFT, 0.5f, 0.5f, messagebox_backcolor);
  
@@ -79,9 +112,9 @@ diff -Nur mame2015-libretro-master/src/emu/ui/ui.c mame2015-libretro-master.ok/s
  	{
  		machine.ui().request_quit();
  		return 0;
-diff -Nur mame2015-libretro-master/src/mame/drivers/cdi.c mame2015-libretro-master.ok/src/mame/drivers/cdi.c
+diff -Nur mame2015-libretro-master/src/mame/drivers/cdi.c mame2015-libretro-mastern/src/mame/drivers/cdi.c
 --- mame2015-libretro-master/src/mame/drivers/cdi.c	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/mame/drivers/cdi.c	2021-12-15 15:33:27.562428846 +0800
++++ mame2015-libretro-mastern/src/mame/drivers/cdi.c	2021-12-16 15:41:25.197589021 +0800
 @@ -132,8 +132,8 @@
  	PORT_BIT(0x3ff, 0x000, IPT_MOUSE_Y) PORT_SENSITIVITY(100) PORT_MINMAX(0x000, 0x3ff) PORT_KEYDELTA(2) PORT_CHANGED_MEMBER("slave", cdislave_device, mouse_update, 0)
  
@@ -93,9 +126,9 @@ diff -Nur mame2015-libretro-master/src/mame/drivers/cdi.c mame2015-libretro-mast
  	PORT_BIT(0xfc, IP_ACTIVE_HIGH, IPT_UNUSED)
  
  	PORT_START("DEBUG")
-diff -Nur mame2015-libretro-master/src/mame/tiny.lst mame2015-libretro-master.ok/src/mame/tiny.lst
+diff -Nur mame2015-libretro-master/src/mame/tiny.lst mame2015-libretro-mastern/src/mame/tiny.lst
 --- mame2015-libretro-master/src/mame/tiny.lst	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/mame/tiny.lst	2021-12-15 15:09:57.012226955 +0800
++++ mame2015-libretro-mastern/src/mame/tiny.lst	2021-12-16 15:41:25.198589022 +0800
 @@ -37,808 +37,4 @@
      POSSIBILITY OF SUCH DAMAGE.
  
@@ -906,9 +939,9 @@ diff -Nur mame2015-libretro-master/src/mame/tiny.lst mame2015-libretro-master.ok
 -sfz3jr2d
 -
 +cdimono1
-diff -Nur mame2015-libretro-master/src/mame/tiny.mak mame2015-libretro-master.ok/src/mame/tiny.mak
+diff -Nur mame2015-libretro-master/src/mame/tiny.mak mame2015-libretro-mastern/src/mame/tiny.mak
 --- mame2015-libretro-master/src/mame/tiny.mak	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/mame/tiny.mak	2021-12-15 15:51:27.597179550 +0800
++++ mame2015-libretro-mastern/src/mame/tiny.mak	2021-12-16 15:41:25.198589022 +0800
 @@ -33,19 +33,10 @@
  # drivers referenced in tiny.c.
  #-------------------------------------------------
@@ -1031,9 +1064,9 @@ diff -Nur mame2015-libretro-master/src/mame/tiny.mak mame2015-libretro-master.ok
  
  #-------------------------------------------------
  # layout dependencies
-diff -Nur mame2015-libretro-master/src/osd/retro/libretro.c mame2015-libretro-master.ok/src/osd/retro/libretro.c
+diff -Nur mame2015-libretro-master/src/osd/retro/libretro.c mame2015-libretro-mastern/src/osd/retro/libretro.c
 --- mame2015-libretro-master/src/osd/retro/libretro.c	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/osd/retro/libretro.c	2021-12-15 15:56:24.566316071 +0800
++++ mame2015-libretro-mastern/src/osd/retro/libretro.c	2021-12-16 15:41:25.198589022 +0800
 @@ -46,12 +46,6 @@
  static char option_info[50];
  static char option_renderer[50];
@@ -1225,9 +1258,9 @@ diff -Nur mame2015-libretro-master/src/osd/retro/libretro.c mame2015-libretro-ma
     info->need_fullpath    = true;
     info->block_extract    = true;
  }
-diff -Nur mame2015-libretro-master/src/osd/retro/libretro_shared.h mame2015-libretro-master.ok/src/osd/retro/libretro_shared.h
+diff -Nur mame2015-libretro-master/src/osd/retro/libretro_shared.h mame2015-libretro-mastern/src/osd/retro/libretro_shared.h
 --- mame2015-libretro-master/src/osd/retro/libretro_shared.h	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/osd/retro/libretro_shared.h	2021-12-15 15:56:13.465429543 +0800
++++ mame2015-libretro-mastern/src/osd/retro/libretro_shared.h	2021-12-16 15:41:25.198589022 +0800
 @@ -27,15 +27,10 @@
  extern const char *retro_content_directory;
  extern int retro_pause;
@@ -1258,13 +1291,13 @@ diff -Nur mame2015-libretro-master/src/osd/retro/libretro_shared.h mame2015-libr
 -/* fallback */
 -static const char core[] = "mame2015";
 -#endif
-+static const char core[] = "cdi";
++static const char core[] = "cdi2015";
  
  /* libretro callbacks */
  extern retro_log_printf_t log_cb;
-diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-master.ok/src/osd/retro/retromain.c
+diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-mastern/src/osd/retro/retromain.c
 --- mame2015-libretro-master/src/osd/retro/retromain.c	2020-12-21 18:59:57.000000000 +0800
-+++ mame2015-libretro-master.ok/src/osd/retro/retromain.c	2021-12-15 15:49:34.451582569 +0800
++++ mame2015-libretro-mastern/src/osd/retro/retromain.c	2021-12-16 15:41:29.824591883 +0800
 @@ -69,11 +69,6 @@
  bool mouse_enable = false;
  bool cheats_enable = false;
@@ -1303,7 +1336,25 @@ diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-m
        log_cb(RETRO_LOG_DEBUG, "Path extraction result: Game path=%s\n",MgamePath);
        log_cb(RETRO_LOG_DEBUG, "Path extraction result: Parent path=%s\n",MparentPath);
     }
-@@ -1770,132 +1753,22 @@
+@@ -1711,7 +1694,7 @@
+ 
+    if(game_specific_saves_enable)
+    {
+-      char option[50];
++      char option[1024];
+       Add_Option("-statename");
+       sprintf(option,"%%g/%s",MgameName);
+       Add_Option(option);
+@@ -1757,7 +1740,7 @@
+ static int execute_game(char* path)
+ {
+    unsigned i;
+-   char tmp_dir[256];
++   char tmp_dir[1024];
+    int gameRot=0;
+    int driverIndex;
+ 
+@@ -1770,132 +1753,36 @@
  
     Extract_AllPath(path);
  
@@ -1368,8 +1419,7 @@ diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-m
 -      log_cb(RETRO_LOG_INFO, "Creating frontend for game: %s\n",MgameName);
 -      log_cb(RETRO_LOG_INFO, "Softlists: %d\n",softlist_enable);
 -   }
-+   strcpy(MsystemName, "cdimono1");
- 
+-
     Set_Default_Option();
  
     Set_Path_Option();
@@ -1385,12 +1435,16 @@ diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-m
 -      if (screenRot == 2)
 -         Add_Option((char*)"-rol");
 -   }
--
-    Add_Option((char*)("-rompath"));
++   // test game exist.
++   if(access(path, F_OK ) != 0)
++      return -2;
  
++   // set rompath, let mame find 'cdimono1.zip'
+    Add_Option((char*)("-rompath"));
+-
 -#ifdef WANT_MAME
-    sprintf(tmp_dir, "%s", MgamePath);
-    Add_Option((char*)(tmp_dir));
+-   sprintf(tmp_dir, "%s", MgamePath);
+-   Add_Option((char*)(tmp_dir));
 -   if(!boot_to_osd_enable)
 -      Add_Option(MgameName);
 -
@@ -1399,9 +1453,19 @@ diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-m
 -   if(!boot_to_osd_enable)
 -   {
 -      sprintf(tmp_dir, "%s", MgamePath);
--      Add_Option((char*)(tmp_dir));
-+   Add_Option((char*)("-cfg_directory"));
-+   Add_Option((char*)(tmp_dir));
++   // test if cdimono1.zip in retroarch bios dir.
++   sprintf(tmp_dir, "%s%ccdimono1.zip", retro_system_directory, slash);
++   if(access(tmp_dir, F_OK ) == 0) {
++      sprintf(tmp_dir, "%s", retro_system_directory);
+       Add_Option((char*)(tmp_dir));
++   } else { // test if cdimono1.zip in game dir.
++      sprintf(tmp_dir, "%s%ccdimono1.zip", MgamePath, slash);
++      if(access(tmp_dir, F_OK ) == 0) {
++         sprintf(tmp_dir, "%s", MgamePath);
++         Add_Option((char*)(tmp_dir));
++      } else
++         return -2;
++   }  
  
 -      if(softlist_enable)
 -      {
@@ -1436,13 +1500,16 @@ diff -Nur mame2015-libretro-master/src/osd/retro/retromain.c mame2015-libretro-m
 -      Add_Option((char*)(tmp_dir));
 -   }
 -#endif
-+   Add_Option(MsystemName);
++   // Add_Option((char*)("-cfg_directory"));
++   // Add_Option((char*)(tmp_dir));
++
++   Add_Option((char*)("cdimono1"));
 +   Add_Option((char*)("-cdrom"));
 +   Add_Option((char*)gameName);
  
     return 0;
  }
-@@ -2142,15 +2015,6 @@
+@@ -2142,15 +2029,6 @@
  
     }
     else
